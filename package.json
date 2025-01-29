@@ -18,6 +18,7 @@
     "db:up": "drizzle-kit up"
   },
   "dependencies": {
+    "-": "^0.0.1",
     "@ai-sdk/openai": "1.0.19",
     "@codemirror/lang-javascript": "^6.2.2",
     "@codemirror/lang-python": "^6.1.6",
@@ -76,6 +77,7 @@
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "usehooks-ts": "^3.1.0",
+    "vercel": "^39.4.2",
     "zod": "^3.23.8"
   },
   "devDependencies": {
