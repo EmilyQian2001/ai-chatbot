@@ -1,7 +1,6 @@
 'use client';
 
 import { startTransition, useMemo, useOptimistic, useState } from 'react';
-
 import { saveModelId } from '@/app/(chat)/actions';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,10 +8,10 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { models } from '@/lib/ai/models';
 import { cn } from '@/lib/utils';
-
 import { CheckCircleFillIcon, ChevronDownIcon } from './icons';
 
 export function ModelSelector({
@@ -22,13 +21,28 @@ export function ModelSelector({
   selectedModelId: string;
 } & React.ComponentProps<typeof Button>) {
   const [open, setOpen] = useState(false);
-  const [optimisticModelId, setOptimisticModelId] =
-    useOptimistic(selectedModelId);
+  const [showApiInput, setShowApiInput] = useState(false);
+  const [apiKey, setApiKey] = useState('');
+  const [optimisticModelId, setOptimisticModelId] = useOptimistic(selectedModelId);
 
   const selectedModel = useMemo(
     () => models.find((model) => model.id === optimisticModelId),
     [optimisticModelId],
   );
+
+  const handleSaveKey = async () => {
+    try {
+      await fetch('/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ perplexityApiKey: apiKey }),
+      });
+      setShowApiInput(false);
+      setApiKey('');
+    } catch (error) {
+      console.error('Error saving API key:', error);
+    }
+  };
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -50,7 +64,6 @@ export function ModelSelector({
             key={model.id}
             onSelect={() => {
               setOpen(false);
-
               startTransition(() => {
                 setOptimisticModelId(model.id);
                 saveModelId(model.id);
@@ -72,6 +85,24 @@ export function ModelSelector({
             </div>
           </DropdownMenuItem>
         ))}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={() => setShowApiInput(true)}>
+          Configure API Key
+        </DropdownMenuItem>
+        {showApiInput && (
+          <div className="p-2 flex flex-col gap-2">
+            <input
+              type="password"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              placeholder="Enter Perplexity API key"
+              className="px-2 py-1 border rounded"
+            />
+            <Button onClick={handleSaveKey} className="w-full">
+              Save
+            </Button>
+          </div>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
