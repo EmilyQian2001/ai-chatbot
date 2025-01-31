@@ -1,24 +1,17 @@
 import { openai } from '@ai-sdk/openai';
-import { perplexity, createPerplexity } from '@ai-sdk/perplexity';
+import { perplexity } from '@ai-sdk/perplexity';
 import { experimental_wrapLanguageModel as wrapLanguageModel } from 'ai';
-
 import { customMiddleware } from './custom-middleware';
 
-// 创建perplexity实例
-const pplx = createPerplexity({
-  apiKey: process.env.PERPLEXITY_API_KEY
-});
-
 export const customModel = (apiIdentifier: string) => {
-  if (apiIdentifier.startsWith('pplx-')) {
-    return wrapLanguageModel({
-      model: pplx(apiIdentifier),
-      middleware: customMiddleware,
-    });
-  }
+  console.log('Model identifier:', apiIdentifier);
+  
+  const model = apiIdentifier.startsWith('sonar-')
+    ? perplexity(apiIdentifier)
+    : openai(apiIdentifier);
 
   return wrapLanguageModel({
-    model: openai(apiIdentifier),
+    model,
     middleware: customMiddleware,
   });
 };

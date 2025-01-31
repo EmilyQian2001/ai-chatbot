@@ -22,16 +22,10 @@ export const models: Array<Model> = [
     description: 'For complex, multi-step tasks',
   },
   {
-    id: 'pplx-70b-online',
-    label: 'Perplexity 70B',
-    apiIdentifier: 'pplx-70b-online',
-    description: 'Fast and powerful large language model',
-  },
-  {
-    id: 'pplx-7b-online',
-    label: 'Perplexity 7B',
-    apiIdentifier: 'pplx-7b-online', 
-    description: 'Efficient model for general tasks',
+    id: 'perplexity-pro',
+    label: 'Perplexity Pro', 
+    apiIdentifier: 'sonar-pro',
+    description: 'Real time search',
   }
 ] as const;
 

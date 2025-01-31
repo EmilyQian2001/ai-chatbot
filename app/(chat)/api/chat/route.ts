@@ -45,12 +45,16 @@ const weatherTools: AllowedTools[] = ['getWeather'];
 const allTools: AllowedTools[] = [...blocksTools, ...weatherTools];
 
 export async function POST(request: Request) {
+  console.log('API Key exists:', !!process.env.PERPLEXITY_API_KEY);
   const {
     id,
     messages,
     modelId,
   }: { id: string; messages: Array<Message>; modelId: string } =
     await request.json();
+
+  console.log('Request modelId:', modelId);
+  console.log('Messages count:', messages.length);
 
   const session = await auth();
 
@@ -81,8 +85,11 @@ export async function POST(request: Request) {
     messages: [{ ...userMessage, createdAt: new Date(), chatId: id }],
   });
 
+  console.log('Using model apiIdentifier:', model.apiIdentifier);
+
   return createDataStreamResponse({
     execute: (dataStream) => {
+      console.log('Starting stream execution...');
       const result = streamText({
         model: customModel(model.apiIdentifier),
         system: systemPrompt,
@@ -102,6 +109,9 @@ export async function POST(request: Request) {
           }),
         },
         onFinish: async ({ response }) => {
+          console.log('Starting onFinish...');
+          console.log('Raw Response:', response);
+          console.log('Messages:', response.messages);
           if (session.user?.id) {
             try {
               const responseMessagesWithoutIncompleteToolCalls =
