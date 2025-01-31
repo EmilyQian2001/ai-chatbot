@@ -96,7 +96,7 @@ def save_search_results(results: List[Dict], output_file: str):
 
 def main():
     # Configuration
-    API_KEY = "87821b459158327ffe7e3dacda3cc9272039e8c4"
+    API_KEY = "xxx"
     INPUT_FILE = "/Users/yangliuxin/ai-chatbot/recommendations.txt"
     OUTPUT_FILE = "product_reviews.json"
     
